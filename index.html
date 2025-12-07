@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>PrayForYou</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* ============ GLOBAL ============ */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Tajawal", sans-serif;
+    }
+
+    body {
+      background: #f4f7f5;
+      color: #0f172a;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 24px 12px;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .app {
+      background: #ffffff;
+      border-radius: 24px;
+      max-width: 900px;
+      width: 100%;
+      box-shadow: 0 18px 45px rgba(15, 118, 110, 0.15);
+      padding: 20px 22px 24px;
+      transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
+      border: 1px solid transparent;
+    }
+
+    /* ============ HEADER ============ */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #bbf7d0, #0f766e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ecfdf5;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .brand-text-title {
+      font-weight: 700;
+      font-size: 22px;
+      color: #022c22;
+      transition: color 0.2s;
+    }
+
+    .brand-text-sub {
+      font-size: 12px;
+      color: #6b7280;
+      transition: color 0.2s;
+    }
+
+    /* language selector + theme */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .lang-switch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #4b5563;
+      transition: color 0.2s;
+    }
+
+    .lang-btn {
+      border: none;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      color: #374151;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, transform 0.08s;
+    }
+
+    .lang-btn.active {
+      background: #0f766e;
+      color: #ecfdf5;
+      transform: translateY(-1px);
+    }
+
+    .lang-btn:hover {
+      background: #cbd5f5;
+    }
+
+    .theme-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #e5e7eb;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, transform 0.08s, box-shadow 0.15s;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15);
+    }
+
+    .theme-btn:hover {
+      background: #d1d5db;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.25);
+    }
+
+    /* ============ MAIN CONTENT ============ */
+    .question {
+      margin-top: 8px;
+      margin-bottom: 10px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #022c22;
+      transition: color 0.2s;
+    }
+
+    .hint {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 10px;
+      transition: color 0.2s;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+      gap: 14px;
+    }
+
+    /* ============ STATES LIST ============ */
+    .states-card {
+      background: #f9fafb;
+      border-radius: 18px;
+      padding: 12px;
+      border: 1px solid #e5e7eb;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .states-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .state-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 10px;
+      font-size: 13px;
+      background: #ffffff;
+      color: #111827;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(15, 23, 42, 0.08);
+      transition: background 0.15s, transform 0.08s, box-shadow 0.15s,
+        color 0.15s;
+    }
+
+    .state-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 14px rgba(15, 23, 42, 0.15);
+    }
+
+    .state-btn.active {
+      background: #0f766e;
+      color: #ecfdf5;
+      box-shadow: 0 5px 16px rgba(15, 118, 110, 0.4);
+    }
+
+    /* ============ PRAYER CARD ============ */
+    .prayer-card {
+      background: #f9fafb;
+      border-radius: 18px;
+      padding: 16px 14px 18px;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 230px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .prayer-label {
+      font-size: 13px;
+      color: #6b7280;
+      transition: color 0.2s;
+    }
+
+    .arabic-prayer {
+      font-size: 20px;
+      line-height: 1.7;
+      color: #064e3b;
+      text-align: center;
+      margin-top: 4px;
+      transition: color 0.2s;
+    }
+
+    .latin-prayer {
+      font-size: 13px;
+      color: #6b7280;
+      text-align: center;
+      margin-top: 4px;
+      transition: color 0.2s;
+    }
+
+    .translated-prayer {
+      font-size: 14px;
+      text-align: center;
+      margin-top: 6px;
+      color: #111827;
+      transition: color 0.2s;
+    }
+
+    .verse {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(16, 185, 129, 0.06);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      text-align: center;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+
+    .verse-text {
+      font-size: 15px;
+      color: #065f46;
+      margin-bottom: 4px;
+    }
+
+    .verse-ref {
+      font-size: 12px;
+      color: #047857;
+    }
+
+    .action-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .next-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 9px 22px;
+      background: #0f766e;
+      color: #ecfdf5;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(15, 118, 110, 0.4);
+      transition: transform 0.08s, box-shadow 0.15s, background 0.15s;
+    }
+
+    .next-btn:hover {
+      background: #115e57;
+      transform: translateY(-1px);
+      box-shadow: 0 5px 18px rgba(15, 118, 110, 0.5);
+    }
+
+    .placeholder {
+      text-align: center;
+      font-size: 14px;
+      color: #6b7280;
+      margin-top: 25px;
+      transition: color 0.2s;
+    }
+
+    /* footer note */
+    .footer-note {
+      font-size: 11px;
+      color: #9ca3af;
+      text-align: center;
+      margin-top: 12px;
+      transition: color 0.2s;
+    }
+
+    /* ============ DARK MODE ============ */
+    body.dark {
+      background: #020617;
+      color: #e5e7eb;
+    }
+
+    body.dark .app {
+      background: #020617;
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.7);
+      border-color: #1f2937;
+    }
+
+    body.dark .brand-text-title {
+      color: #e5e7eb;
+    }
+
+    body.dark .brand-text-sub,
+    body.dark .hint,
+    body.dark .prayer-label,
+    body.dark .latin-prayer,
+    body.dark .placeholder,
+    body.dark .lang-switch,
+    body.dark .footer-note {
+      color: #9ca3af;
+    }
+
+    body.dark .question {
+      color: #f9fafb;
+    }
+
+    body.dark .states-card,
+    body.dark .prayer-card {
+      background: #020617;
+      border-color: #1f2937;
+    }
+
+    body.dark .state-btn {
+      background: #111827;
+      color: #e5e7eb;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    body.dark .state-btn.active {
+      background: #0f766e;
+      color: #ecfdf5;
+      box-shadow: 0 5px 18px rgba(34, 197, 94, 0.6);
+    }
+
+    body.dark .arabic-prayer {
+      color: #bbf7d0;
+    }
+
+    body.dark .translated-prayer {
+      color: #e5e7eb;
+    }
+
+    body.dark .verse {
+      background: rgba(15, 118, 110, 0.22);
+      border-color: rgba(45, 212, 191, 0.8);
+    }
+
+    body.dark .verse-text {
+      color: #a7f3d0;
+    }
+
+    body.dark .verse-ref {
+      color: #6ee7b7;
+    }
+
+    body.dark .theme-btn {
+      background: #111827;
+      color: #e5e7eb;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.7);
+    }
+
+    body.dark .theme-btn:hover {
+      background: #1f2937;
+    }
+
+    /* responsive */
+    @media (max-width: 760px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      body {
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="brand">
+        <div class="logo">🤲</div>
+        <div>
+          <div class="brand-text-title" id="appName">PrayForYou</div>
+          <div class="brand-text-sub" id="tagline">
+            دعاء يناسب حالتك – بثلاث لغات.
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="lang-switch">
+          <span id="langLabel">اللغة:</span>
+          <button class="lang-btn active" data-lang="ar">العربية</button>
+          <button class="lang-btn" data-lang="en">English</button>
+          <button class="lang-btn" data-lang="fr">Français</button>
+        </div>
+        <button class="theme-btn" id="themeToggleBtn" title="الوضع الليلي">
+          🌙
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <div class="question" id="questionText">
+        ما هي حالتك الآن؟
+      </div>
+      <div class="hint" id="hintText">
+        اختر أقرب حالة لك، وسنقترح عليك دعاءًا مناسبًا.
+      </div>
+
+      <div class="layout">
+        <!-- حالات -->
+        <section class="states-card">
+          <div id="statesTitle" style="font-size:14px;color:#4b5563;margin-bottom:4px;">
+            الحالات المتاحة:
+          </div>
+          <div class="states-grid" id="statesGrid"></div>
+        </section>
+
+        <!-- الدعاء -->
+        <section class="prayer-card">
+          <div class="prayer-label" id="prayerLabel">
+            الدعاء المقترح:
+          </div>
+          <div class="arabic-prayer" id="arabicPrayer"></div>
+          <div class="latin-prayer" id="latinPrayer"></div>
+          <div class="translated-prayer" id="translatedPrayer"></div>
+
+          <div class="verse" id="verseBlock" style="display:none;">
+            <div class="verse-text" id="verseText"></div>
+            <div class="verse-ref" id="verseRef"></div>
+          </div>
+
+          <div class="placeholder" id="placeholderText">
+            اختر حالة من القائمة على اليسار ليظهر لك الدعاء هنا.
+          </div>
+
+          <div class="action-row">
+            <button class="next-btn" id="nextPrayerBtn">
+              دعاء آخر لنفس الحالة
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <div class="footer-note" id="footerNote">
+        هذا الموقع نيةُ صاحبه أن يكون صدقةً جارية؛ فلا تنسه من صالح دعائك.
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // ================= UI TRANSLATIONS =================
+    const uiTranslations = {
+      ar: {
+        appName: "PrayForYou",
+        tagline: "دعاء يناسب حالتك – بثلاث لغات.",
+        langLabel: "اللغة:",
+        question: "ما هي حالتك الآن؟",
+        hint: "اختر أقرب حالة لك، وسنقترح عليك دعاءًا مناسبًا.",
+        statesTitle: "الحالات المتاحة:",
+        prayerLabel: "الدعاء المقترح:",
+        placeholder: "اختر حالة من القائمة على اليسار ليظهر لك الدعاء هنا.",
+        next: "دعاء آخر لنفس الحالة",
+        footer:
+          "هذا الموقع نيةُ صاحبه أن يكون صدقةً جارية؛ فلا تنسه من صالح دعائك."
+      },
+      en: {
+        appName: "PrayForYou",
+        tagline: "A short prayer tailored to your situation — in 3 languages.",
+        langLabel: "Language:",
+        question: "What do you feel right now?",
+        hint: "Choose the situation that fits you, and we will suggest a prayer.",
+        statesTitle: "Available situations:",
+        prayerLabel: "Suggested prayer:",
+        placeholder: "Choose a situation on the left to see a prayer here.",
+        next: "Give me another prayer",
+        footer:
+          "This website was built as a charity project. Please remember its creator in your prayers."
+      },
+      fr: {
+        appName: "PrayForYou",
+        tagline:
+          "Une invocation adaptée à ta situation — en 3 langues.",
+        langLabel: "Langue :",
+        question: "Que ressens-tu en ce moment ?",
+        hint: "Choisis la situation qui te ressemble, et nous te proposerons une invocation.",
+        statesTitle: "Situations disponibles :",
+        prayerLabel: "Invocation proposée :",
+        placeholder:
+          "Choisis une situation à gauche pour afficher une invocation ici.",
+        next: "Donne-moi une autre invocation",
+        footer:
+          "Ce site a été créé comme aumône continue. N’oublie pas son créateur dans tes invocations."
+      }
+    };
+
+    // ================= STATES & PRAYERS =================
+    // لكل دعاء يمكن إضافة آية: ayahAr + ayahRef (اختياري)
+    const states = [
+      {
+        id: "sad",
+        labels: { ar: "حزين", en: "Sadness", fr: "Tristesse" },
+        prayers: [
+          {
+            ar: "اللهم اشْرَحْ صدري، واذهب همّي، واملأ قلبي رضا وسكينة.",
+            en: "O Allah, open my chest, remove my sorrow, and fill my heart with peace and contentment.",
+            fr: "Ô Allah, ouvre ma poitrine, enlève ma tristesse et remplis mon cœur de paix et de satisfaction.",
+            ayahAr: "﴿ لَا تَحْزَنْ إِنَّ اللَّهَ مَعَنَا ﴾",
+            ayahRef: "التوبة 40"
+          },
+          {
+            ar: "يا رب، اجعل ما أحزنني سببًا لرفعةٍ عندك، ولا تجعل في قلبي إلا الخير.",
+            en: "My Lord, make what saddened me a reason to rise in Your sight, and leave nothing in my heart but goodness.",
+            fr: "Seigneur, fais de ce qui m’a attristé une cause d’élévation auprès de Toi et ne laisse dans mon cœur que le bien.",
+            ayahAr: "﴿ وَبَشِّرِ الصَّابِرِينَ ﴾",
+            ayahRef: "البقرة 155"
+          }
+        ]
+      },
+      {
+        id: "anxious",
+        labels: { ar: "قلق / خائف", en: "Anxiety / Fear", fr: "Anxiété / Peur" },
+        prayers: [
+          {
+            ar: "اللهم إني أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَأَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ.",
+            en: "O Allah, I seek refuge in You from worry and grief, and I seek refuge in You from cowardice and miserliness.",
+            fr: "Ô Allah, je cherche refuge auprès de Toi contre l’inquiétude et la tristesse, et contre la lâcheté et l’avarice.",
+            ayahAr: "﴿ أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ ﴾",
+            ayahRef: "الرعد 28"
+          },
+          {
+            ar: "يا الله، طمْئِن قلبي، وقرّ عيني، وأذهب خوفي، فأنت حسبي ونعم الوكيل.",
+            en: "O Allah, calm my heart, soothe my eyes, and remove my fear — You are sufficient for me and the best disposer of affairs.",
+            fr: "Ô Allah, apaise mon cœur, rassure mes yeux et enlève ma peur. Tu me suffies et Tu es le meilleur Garant.",
+            ayahAr: "﴿ حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ ﴾",
+            ayahRef: "آل عمران 173"
+          }
+        ]
+      },
+      {
+        id: "ill",
+        labels: { ar: "مريض", en: "Illness", fr: "Maladie" },
+        prayers: [
+          {
+            ar: "اللهم ربَّ الناس، أذهب البأس، اشفِ أنت الشافي، لا شفاء إلا شفاؤك، شفاءً لا يغادر سقمًا.",
+            en: "O Lord of mankind, remove the harm and cure; You are the Healer. There is no healing except Your healing, a cure that leaves no illness.",
+            fr: "Ô Seigneur des gens, enlève le mal et accorde la guérison. Tu es le Guérisseur ; il n’y a de guérison que Ta guérison, une guérison qui ne laisse aucune maladie.",
+            ayahAr: "﴿ وَإِذَا مَرِضْتُ فَهُوَ يَشْفِينِ ﴾",
+            ayahRef: "الشعراء 80"
+          },
+          {
+            ar: "يا رب، اجعل هذا المرض كفارةً ورفعة، وامنحني صبرًا جميلًا وعافية تامة.",
+            en: "My Lord, make this illness an expiation and a means of elevation, and grant me beautiful patience and complete healing.",
+            fr: "Seigneur, fais de cette maladie une expiation et une élévation, et accorde-moi une belle patience et une guérison complète.",
+            ayahAr: "﴿ إِنَّ مَعَ الْعُسْرِ يُسْرًا ﴾",
+            ayahRef: "الشرح 6"
+          }
+        ]
+      },
+      {
+        id: "guilt",
+        labels: { ar: "أشعر بالذنب", en: "Guilt / Repentance", fr: "Culpabilité / Repentir" },
+        prayers: [
+          {
+            ar: "اللهم إني ظلمتُ نفسي ظلمًا كثيرًا، ولا يغفر الذنوب إلا أنت، فاغفر لي مغفرةً من عندك وارحمني.",
+            en: "O Allah, I have wronged myself greatly, and none forgives sins except You, so forgive me with a forgiveness from You and have mercy on me.",
+            fr: "Ô Allah, je me suis beaucoup fait du tort à moi-même, et nul ne pardonne les péchés en dehors de Toi. Pardonne-moi donc un pardon venant de Ta part et fais-moi miséricorde.",
+            ayahAr: "﴿ قُلْ يَا عِبَادِيَ الَّذِينَ أَسْرَفُوا عَلَىٰ أَنفُسِهِمْ لَا تَقْنَطُوا مِن رَّحْمَةِ اللَّهِ ﴾",
+            ayahRef: "الزمر 53"
+          },
+          {
+            ar: "يا توّاب، تُبْ عليَّ توبةً نصوحًا، واصرف قلبي عن كل ما لا يرضيك.",
+            en: "O Accepter of repentance, grant me a sincere repentance and turn my heart away from everything that displeases You.",
+            fr: "Ô Toi qui acceptes le repentir, accorde-moi un repentir sincère et détourne mon cœur de tout ce qui Te déplaît.",
+            ayahAr: "﴿ إِنَّ اللَّهَ يُحِبُّ التَّوَّابِينَ ﴾",
+            ayahRef: "البقرة 222"
+          }
+        ]
+      },
+      {
+        id: "happy",
+        labels: { ar: "سعيد / شكر", en: "Happiness / Gratitude", fr: "Joie / Gratitude" },
+        prayers: [
+          {
+            ar: "الحمد لله على ما أنعمتَ به عليَّ، اللهم اجعل هذه النعمة عونًا لي على طاعتك.",
+            en: "All praise is for You, O Allah, for what You have blessed me with. Make this blessing a help for me in obeying You.",
+            fr: "Louange à Toi, ô Allah, pour ce dont Tu m’as comblé. Fais que ce bienfait m’aide à T’obéir.",
+            ayahAr: "﴿ لَئِن شَكَرْتُمْ لَأَزِيدَنَّكُمْ ﴾",
+            ayahRef: "إبراهيم 7"
+          },
+          {
+            ar: "يا رب، كما أسعدت قلبي اليوم، فلا تجعلني أنسى فضلك، ووفقني لشكر نعمتك.",
+            en: "My Lord, just as You brought joy to my heart today, do not let me forget Your favor, and enable me to show gratitude for Your blessing.",
+            fr: "Seigneur, comme Tu as réjoui mon cœur aujourd’hui, ne me laisse pas oublier Ta grâce et accorde-moi de Te remercier pour Tes bienfaits.",
+            ayahAr: "﴿ وَمَا بِكُم مِّن نِّعْمَةٍ فَمِنَ اللَّهِ ﴾",
+            ayahRef: "النحل 53"
+          }
+        ]
+      },
+      {
+        id: "loss",
+        labels: { ar: "فقدان شخص", en: "Loss", fr: "Perte" },
+        prayers: [
+          {
+            ar: "اللهم ارحم من فقدناهم رحمةً واسعة، واجمعنا بهم في جنّات النعيم بلا سابقة عذاب ولا حساب.",
+            en: "O Allah, have vast mercy on those we have lost, and reunite us with them in gardens of bliss without prior punishment or reckoning.",
+            fr: "Ô Allah, fais miséricorde largement à ceux que nous avons perdus et réunis-nous avec eux dans les jardins du délice sans châtiment ni compte préalable.",
+            ayahAr: "﴿ إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ ﴾",
+            ayahRef: "البقرة 156"
+          },
+          {
+            ar: "يا رب، اجبر كسر قلبي، وامنحني صبرًا ورضًا بقضائك.",
+            en: "My Lord, mend my broken heart and grant me patience and contentment with Your decree.",
+            fr: "Seigneur, répare mon cœur brisé et accorde-moi patience et satisfaction de Ton décret.",
+            ayahAr: "﴿ وَاصْبِرْ وَمَا صَبْرُكَ إِلَّا بِاللَّهِ ﴾",
+            ayahRef: "النحل 127"
+          }
+        ]
+      },
+      {
+        id: "rizq",
+        labels: { ar: "طلب الرزق", en: "Sustenance", fr: "Subsistance" },
+        prayers: [
+          {
+            ar: "اللهم ارزقني رزقًا حلالًا طيبًا واسعًا، وبارك لي فيه واصرف عني الحرام.",
+            en: "O Allah, grant me lawful, pure and abundant provision, bless it for me, and keep me away from the unlawful.",
+            fr: "Ô Allah, accorde-moi une subsistance licite, pure et abondante, bénis-la pour moi et éloigne-moi de l’illicite.",
+            ayahAr: "﴿ وَفِي السَّمَاءِ رِزْقُكُمْ وَمَا تُوعَدُونَ ﴾",
+            ayahRef: "الذاريات 22"
+          },
+          {
+            ar: "يا كريم، افتح لي أبواب فضلك، واغنِني بحلالك عن حرامك، وبطاعتك عن معصيتك.",
+            en: "O Most Generous, open for me the doors of Your bounty, and suffice me with what is lawful instead of what is unlawful, and with obedience instead of disobedience.",
+            fr: "Ô Généreux, ouvre-moi les portes de Ta grâce et suffi-moi par le licite loin de l’illicite, et par l’obéissance loin de la désobéissance.",
+            ayahAr: "﴿ إِنَّ رَبِّي يَبْسُطُ الرِّزْقَ لِمَن يَشَاءُ ﴾",
+            ayahRef: "سبأ 36"
+          }
+        ]
+      },
+      {
+        id: "exam",
+        labels: { ar: "امتحان / دراسة", en: "Exam / Study", fr: "Examen / Études" },
+        prayers: [
+          {
+            ar: "اللهم لا سهل إلا ما جعلته سهلًا، وأنت تجعل الحزن إذا شئت سهلًا، فسهّل عليَّ أمري وعلّمني ما ينفعني.",
+            en: "O Allah, there is no ease except what You make easy, and You make difficulty, if You will, easy. So make my matter easy and teach me what benefits me.",
+            fr: "Ô Allah, rien n’est facile si Tu ne le rends pas facile, et Tu rends la difficulté facile si Tu le veux. Facilite donc mon affaire et apprends-moi ce qui m’est utile.",
+            ayahAr: "﴿ رَّبِّ زِدْنِي عِلْمًا ﴾",
+            ayahRef: "طه 114"
+          }
+        ]
+      },
+      {
+        id: "guidance",
+        labels: { ar: "هداية / حيرة", en: "Guidance", fr: "Guidance" },
+        prayers: [
+          {
+            ar: "اللهم اهْدِني وسدّدني، واختر لي ولا تكلني إلى نفسي طرفة عين.",
+            en: "O Allah, guide me and keep me firm, choose what is best for me, and do not leave me to myself even for the blink of an eye.",
+            fr: "Ô Allah, guide-moi et affermis-moi, choisis ce qu’il y a de meilleur pour moi et ne me laisse pas à moi-même ne serait-ce que le temps d’un clin d’œil.",
+            ayahAr: "﴿ وَمَن يَهْدِ اللَّهُ فَهُوَ الْمُهْتَدِي ﴾",
+            ayahRef: "الأعراف 178"
+          }
+        ]
+      },
+      {
+        id: "forSomeone",
+        labels: { ar: "دعاء لشخص آخر", en: "For someone else", fr: "Pour quelqu’un" },
+        prayers: [
+          {
+            ar: "اللهم أعطِه خير ما تسأل، واصرف عنه شر ما تخاف، وقرّبه إليك وبارك له في عمره وعافيته.",
+            en: "O Allah, grant them the best of what is asked, protect them from what is feared, draw them near to You, and bless their life and health.",
+            fr: "Ô Allah, accorde-lui le meilleur de ce qui peut être demandé, protège-le de ce que l’on craint, rapproche-le de Toi et bénis sa vie et sa santé.",
+            ayahAr: "﴿ وَالْمُؤْمِنُونَ وَالْمُؤْمِنَاتُ بَعْضُهُمْ أَوْلِيَاءُ بَعْضٍ ﴾",
+            ayahRef: "التوبة 71"
+          },
+          {
+            ar: "يا رب، كما أحببته فيك، فاحفظه بحفظك، واكتب له من الخير ما ترضاه له في الدنيا والآخرة.",
+            en: "My Lord, just as I love them for Your sake, protect them with Your protection and decree for them the good that You are pleased with in this life and the next.",
+            fr: "Seigneur, comme je l’aime en Toi, protège-le par Ta protection et décrète pour lui le bien dont Tu es satisfait ici-bas et dans l’au-delà.",
+            ayahAr: "﴿ إِنَّ اللَّهَ يُحِبُّ الْمُحْسِنِينَ ﴾",
+            ayahRef: "البقرة 195"
+          }
+        ]
+      },
+      {
+        id: "protection",
+        labels: { ar: "حماية وطمأنينة", en: "Protection & Peace", fr: "Protection & Paix" },
+        prayers: [
+          {
+            ar: "بِسْمِ اللهِ الَّذي لا يَضُرُّ معَ اسمِهِ شَيءٌ في الأرضِ ولا في السماءِ وهو السميعُ العليم.",
+            en: "In the Name of Allah, with whose Name nothing on earth or in heaven can cause harm, and He is the All-Hearing, All-Knowing.",
+            fr: "Au nom d’Allah, avec le Nom duquel rien sur terre ni au ciel ne peut nuire ; Il est l’Audient, l’Omniscient.",
+            ayahAr: "﴿ وَاللَّهُ خَيْرُ حَافِظًا ﴾",
+            ayahRef: "يوسف 64"
+          },
+          {
+            ar: "اللهم احطني بسياج من رحمتك، وأمِن قلبي وأهلي من كل سوء.",
+            en: "O Allah, surround me with a shield of Your mercy, and grant safety to my heart and my family from all harm.",
+            fr: "Ô Allah, entoure-moi d’une barrière de Ta miséricorde et accorde la sécurité à mon cœur et à ma famille contre tout mal.",
+            ayahAr: "﴿ لَهُمْ دَارُ السَّلَامِ عِندَ رَبِّهِمْ ﴾",
+            ayahRef: "الأنعام 127"
+          }
+        ]
+      }
+    ];
+
+    let currentLang = "ar";
+    let currentStateId = null;
+    const THEME_KEY = "pfy-theme";
+
+    // ================= THEME =================
+    function applyTheme(theme) {
+      const body = document.body;
+      const btn = document.getElementById("themeToggleBtn");
+      if (theme === "dark") {
+        body.classList.add("dark");
+        btn.textContent = "☀";
+        btn.title = "الوضع الفاتح";
+      } else {
+        body.classList.remove("dark");
+        btn.textContent = "🌙";
+        btn.title = "الوضع الليلي";
+      }
+      localStorage.setItem(THEME_KEY, theme);
+    }
+
+    // ================= LANGUAGE =================
+    function setLanguage(lang) {
+      currentLang = lang;
+
+      if (lang === "ar") {
+        document.documentElement.lang = "ar";
+        document.documentElement.dir = "rtl";
+      } else {
+        document.documentElement.lang = lang;
+        document.documentElement.dir = "ltr";
+      }
+
+      const t = uiTranslations[lang];
+      document.getElementById("appName").textContent = t.appName;
+      document.getElementById("tagline").textContent = t.tagline;
+      document.getElementById("langLabel").textContent = t.langLabel;
+      document.getElementById("questionText").textContent = t.question;
+      document.getElementById("hintText").textContent = t.hint;
+      document.getElementById("statesTitle").textContent = t.statesTitle;
+      document.getElementById("prayerLabel").textContent = t.prayerLabel;
+      document.getElementById("placeholderText").textContent = t.placeholder;
+      document.getElementById("nextPrayerBtn").textContent = t.next;
+      document.getElementById("footerNote").textContent = t.footer;
+
+      renderStates();
+      if (currentStateId) {
+        showRandomPrayer(currentStateId);
+      }
+    }
+
+    function renderStates() {
+      const grid = document.getElementById("statesGrid");
+      grid.innerHTML = "";
+      states.forEach((state) => {
+        const btn = document.createElement("button");
+        btn.className = "state-btn";
+        if (state.id === currentStateId) btn.classList.add("active");
+        btn.textContent = state.labels[currentLang];
+        btn.dataset.id = state.id;
+        btn.addEventListener("click", () => {
+          currentStateId = state.id;
+          document.querySelectorAll(".state-btn").forEach((b) =>
+            b.classList.remove("active")
+          );
+          btn.classList.add("active");
+          showRandomPrayer(state.id);
+        });
+        grid.appendChild(btn);
+      });
+    }
+
+    function showRandomPrayer(stateId) {
+      const state = states.find((s) => s.id === stateId);
+      if (!state) return;
+
+      const random =
+        state.prayers[Math.floor(Math.random() * state.prayers.length)];
+
+      const arabicEl = document.getElementById("arabicPrayer");
+      const latinEl = document.getElementById("latinPrayer");
+      const translatedEl = document.getElementById("translatedPrayer");
+      const placeholderEl = document.getElementById("placeholderText");
+      const verseBlock = document.getElementById("verseBlock");
+      const verseText = document.getElementById("verseText");
+      const verseRef = document.getElementById("verseRef");
+
+      arabicEl.textContent = random.ar;
+      latinEl.textContent = ""; // لو حبيت تضيف كتابة لاتينية فيما بعد
+      translatedEl.textContent = random[currentLang];
+
+      if (random.ayahAr && random.ayahRef) {
+        verseText.textContent = random.ayahAr;
+        verseRef.textContent = random.ayahRef;
+        verseBlock.style.display = "block";
+      } else {
+        verseBlock.style.display = "none";
+      }
+
+      placeholderEl.style.display = "none";
+    }
+
+    // ================= INIT =================
+
+    // language buttons
+    document.querySelectorAll(".lang-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document
+          .querySelectorAll(".lang-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        setLanguage(btn.dataset.lang);
+      });
+    });
+
+    // theme toggle
+    document.getElementById("themeToggleBtn").addEventListener("click", () => {
+      const current = document.body.classList.contains("dark")
+        ? "dark"
+        : "light";
+      applyTheme(current === "dark" ? "light" : "dark");
+    });
+
+    // next prayer
+    document.getElementById("nextPrayerBtn").addEventListener("click", () => {
+      if (currentStateId) {
+        showRandomPrayer(currentStateId);
+      }
+    });
+
+    // أول تشغيل: ثيم + لغة + حالات
+    const savedTheme = localStorage.getItem(THEME_KEY) || "light";
+    applyTheme(savedTheme);
+    renderStates();
+    setLanguage("ar");
+  </script>
+</body>
+</html>
